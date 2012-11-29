@@ -42,4 +42,7 @@ intn/*
 # content
 *.mp3
 *.jpg
+
 *.intention
+Thumbs.db
+
