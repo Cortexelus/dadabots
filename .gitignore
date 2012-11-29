@@ -35,9 +35,6 @@ nosetests.xml
 .pydevproject
 
 # Stuff related to this project
-art/*
-mp3/*
-intn/*
 
 # content
 *.mp3
