@@ -51,20 +51,20 @@ def main(inputFilename, outputFilename):
 		for i in range(0, seglen):
 			if i%2 :
 				seg = song[segs[i]]
-				#seg.data = window(seg.data)
+				seg.data = window(seg.data)
 				out.append(seg)
 			else:
 				seg = song[ segs[seglen - i - 1 ]]
 				try:
 					seg.data = seg.data[::-1]
-					#seg.data = window(seg.data)
+					seg.data = window(seg.data)
 					out.append(seg)
 					del(seg.data)
 					del(seg)
 				except:
 					print "fuckkkkk"
 					seg = song[segs[i]]
-					#seg.data = window(seg.data)
+					seg.data = window(seg.data)
 					out.append(seg)
 			
 				
@@ -75,14 +75,15 @@ def main(inputFilename, outputFilename):
 	#newAudio.encode(outputFilename)
 
 def window(data):
-	w = 4000 # window size; number of samples to taper off
+	w = 8000 # window size; number of samples to taper off
 	s = len(data) # total number of samples in segment 
 	if(s<2*w):
 		w = math.floor(s/2)-1
 	
 	for n in range(0, w):
 		#r = pow(2, i/w)-1  # ratio by which to taper
-		r = 0.5 * (1 - math.cos((2*3.14*n)/( w-1)))
+		#r = 0.5 * (1 - math.cos((2*3.14*n)/( w-1)))
+		r = (pow(10, n/w)-1)/9
 		data[n] *= r # beginning sample
 		data[s-n-1] *= r # end sample
 	

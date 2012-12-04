@@ -39,7 +39,7 @@ nosetests.xml
 # content
 *.mp3
 *.jpg
-
+*.bat
 *.intention
 Thumbs.db
 

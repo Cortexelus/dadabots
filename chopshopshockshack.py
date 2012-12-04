@@ -7,6 +7,7 @@ import random
 import os
 import sys
 
+
 usage = ("\nDadaBots this_bot usage:\n"
 		 "*****************************************************************\n"
 		 "| python this_bot.py [url|file.intention] [remix] [post] [clean]\n"
@@ -43,10 +44,10 @@ bot = None
 def grabsong(url):
 	global bot
 	bot = DadaBot()
-	bot.connect("becawwrdsaekva", "fckngtrdtn7.5")
+	bot.connect("chopshopshockshack", "fckngtrdtn7.5")
 	
-	bot.remix_process_call = "python remix-scripts/becawwrdsaekva.py %s %s"
-	bot.tag = "weev" # for file names example: "song.rmx.weev.mp3"	
+	bot.remix_process_call = "python remix-scripts/dadarays.py %s %s" 
+	bot.tag = "(@)"
 	
 	if url=="":
 		bot.always_find_new_tracks = True # will not remix the same song twice
@@ -54,7 +55,7 @@ def grabsong(url):
 		bot.find_track()
 	else:
 		bot.grab_track(url)
-	
+		
 	
 	return bot.dump_intention() 
 	
@@ -99,23 +100,10 @@ def postsong(postintention):
 		bot.remix_artwork = artremixer.art_florp(bot, bot.track_art)
 	
 	# remix title
-	#bot.remix_title = "%s: %s [%s]" % tuple([bot.follower.username, bot.track.title, bot.tag])
-	def weave_words(old):
-		new = ""
-		oldlen = len(old)
-		if oldlen%2==0:
-			old += " "
-			oldlen+=1
-		for i in range(0,oldlen):
-			if i%2 :
-				new += old[i]
-			else:
-				new += old[oldlen- i - 1 ]
-		return new
+	bot.remix_title = "%s - %s RMX (@)" % (bot.follower.username, bot.track.title)
 				
-	bot.remix_title = weave_words(bot.track.title)
-	bot.genre = weave_words(bot.track.genre)
-	bot.remix_description = weave_words(bot.track.description)
+	bot.genre = "@"
+	bot.remix_description = ""
 	
 	# POST remix
 	remix = bot.post_remix()
@@ -126,6 +114,24 @@ def postsong(postintention):
 	# like original track (this marks the track so that bot doesn't remix it twice)
 	bot.like_track(bot.track)
 	
+	
+	# edit comments here
+	# %s is where remix url goes. 
+	bot.comments = [
+		"Ideas are kinky and what matters is a fun, but your swag is the acquisition of culture. %s",
+		"If nothing is boring after two minutes? Try it four. Then Sixteen. You discover that nothing is eventually boring after all. %s",
+		"I can understand why people are so frightened of new music for i'm frightened of old music. %s",
+		"I knowww this is poetry! %s",
+		"Killer drop. We need to annoy the past or it will not be gone. %s",
+		"i like to discover for no reason.  %s",
+		"you enable me to fly. %s",
+		"When you separated music from life we got art. %s",
+		"You carry your home on your back? %s",
+		"Those four sounds are good! %s",
+		"Let's mingle or swap genes? %s"
+	]
+
+
 	# comment on original track
 	comment_string = bot.comment(bot.remix_track.permalink_url)
 	print "Commenting . . . " + comment_string + "\n"
@@ -135,7 +141,7 @@ def postsong(postintention):
 	})
 	
 	# comment on remix
-	remix_comment_string = weave_words("Original:") + bot.track.permalink_url
+	remix_comment_string = "Original: " + bot.track.permalink_url
 	print "Commenting . . . " + remix_comment_string + "\n"
 	track_comment = bot.client.post('/tracks/%d/comments' % bot.remix_track.id, comment={
 		'body': remix_comment_string,

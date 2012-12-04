@@ -25,7 +25,7 @@ import subprocess
 usage = "Use it correctly, not incorrectly"
 
 class DadaBot:
-	
+	 
 	def __init__(bot):	
 		bot.client = None #  need to call connectSC()
 		bot.bot_user = None # need to call connectSC()
@@ -60,7 +60,7 @@ class DadaBot:
 		bot.username = "becawwrdsaekva"
 		bot.password = "fckngtrdtn7.5"
 		bot.genre = "[WEEV]"
-		bot.tag = "[WEEV]"
+		bot.tag = "" # for file names example: "song.rmx.weev.mp3"
 		
 		# unicode("z¬", errors='ignore')# unicode("ž¬", errors='ignore') # unicode("\u0290¬", errors='replace') #"ž¬" #.decode("utf-8", "replace")
 
@@ -96,7 +96,7 @@ class DadaBot:
 		bot.bot_userid = bot.bot_user.id
 		
 	def get_followers(bot, user):
-		return bot.client.get('/users/%i/followers' % user.id)
+		return bot.client.get('/users/%i/followers' % user.id, order='created_at')
 		
 	# follows all the followers' followers
 	def amicabilify(bot, user):
@@ -138,33 +138,43 @@ class DadaBot:
 		
 		p = bot.track.permalink_url.split('/')
 		bot.track_mp3  = './mp3/' + p[-2] + "_" + p[-1] + ".mp3"
-		bot.remix_mp3 = './mp3/' + p[-2] + "_" + p[-1] + ".rmx.mp3"
+		bot.remix_mp3 = './mp3/' + p[-2] + "_" + p[-1] + ".rmx." + bot.tag + ".mp3"
 		bot.track_art  = './art/' + p[-2] + "_" + p[-1] + ".jpg"
 		bot.user_art = './art/' + bot.follower.username + ".avatar.jpg"
 		
 		try: 
 			gnabber.gnabsong(url, bot.track_mp3)
-			
-			if(bot.track.artwork_url):
-				gnabber.download(bot.track.artwork_url, bot.track_art)
-			else:
-				bot.track_art = ""
-			if(bot.follower.avatar_url):
-				gnabber.download(bot.follower.avatar_url,bot.user_art)
-			else:
-				bot.user_art = ""
-			
-			print "\n"
-			print "MP3: " + bot.track_mp3
-			print "TRACK_ART: " + bot.track_art
-			print "USER_ART: " + bot.user_art
-			return True
 		except:
 			print "shit!!!!\n\n"
 			return False
+		
+		if(bot.track.artwork_url):
+			try: 
+				gnabber.download(bot.track.artwork_url, bot.track_art)
+			except:
+				print "!! Failed to download trackartwork: " + bot.track.artwork_url
+				bot.track_art = ""
+		else:
+			bot.track_art = ""
+			
+		if(bot.follower.avatar_url):
+			try: 
+				gnabber.download(bot.follower.avatar_url,bot.user_art)
+			except:
+				print "!! Failed to download trackartwork: " + bot.follower.avatar_url
+				bot.user_art = ""
+		else:
+			bot.user_art = ""
+			
+		print "\n"
+		print "MP3: " + bot.track_mp3
+		print "TRACK_ART: " + bot.track_art
+		print "USER_ART: " + bot.user_art
+		return True
 	
 	def remix(bot):
 		# and here is where a large security flaw lays dormant
+		print "About to call the following process: " + bot.remix_process_call
 		subprocess.call(bot.remix_process_call % (bot.track_mp3, bot.remix_mp3))
 		bot.remix_completed = True
 	
@@ -178,6 +188,7 @@ class DadaBot:
 		bot.follower = bot.client.get('/users/'+str(bot.track.user_id))
 		if bot.download_mp3_and_art():
 		
+		
 			bot.trackid = bot.track.id
 			bot.followerid = bot.follower.id
 			return True
@@ -187,7 +198,7 @@ class DadaBot:
 	#algorithm for choosing which track to download
 	def find_track(bot):
 		bot.followers = bot.get_followers(bot.bot_user)
-		bot.followers.reverse()
+		#bot.followers.reverse()
 		track_found = False
 		for follower in bot.followers:
 			#print "Searching " + follower.username + "'s tracks . . . "
@@ -205,6 +216,14 @@ class DadaBot:
 				if bot.download_mp3_and_art(): 
 					track_found = True
 					break
+				else:
+					sys.stdout.write("Keep searching through " + follower.username + "'s tracks?")
+					choice = raw_input().lower()
+					if choice=="y" or choice=="yes":
+						continue
+					else:
+						break
+				
 					
 			if track_found:
 				break
@@ -220,7 +239,7 @@ class DadaBot:
 		
 
 	def dump_intention(bot):
-		intention_filename = "./intn/" + bot.track_mp3[6:-4] + ".intention"
+		intention_filename = "./intn/" + bot.track_mp3[6:-4] + "." + bot.tag + ".intention"
 		
 		# an intention is a copy of the bot object
 		# except it does not contain the soundcloud objects (because this causes a stack overflow)
@@ -256,11 +275,13 @@ class DadaBot:
 			art_bytes = open(bot.remix_artwork, 'rb')
 		else:
 			art_bytes = ""
+		if not bot.remix_description:
+			bot.remix_description = '%s remix of %s' % (bot.tag, bot.track.permalink_url)
 		bot.remix_track = bot.client.post('/tracks', track={
 			'title': bot.remix_title,
 			'asset_data': open(bot.remix_mp3, 'rb'),
 			'sharing': 'public',
-			'description' : '%s remix of %s' % tuple([bot.tag, bot.track.permalink_url]),
+			'description' : bot.remix_description,
 			'genre' : bot.genre,
 			'artwork_data' : art_bytes
 		})
