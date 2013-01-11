@@ -45,7 +45,6 @@ def grabsong(url):
 	bot = DadaBot()
 	bot.connect("becawwrdsaekva", "fckngtrdtn7.5")
 	
-	bot.remix_process_call = "python remix-scripts/becawwrdsaekva.py %s %s"
 	bot.tag = "weev" # for file names example: "song.rmx.weev.mp3"	
 	
 	if url=="":
@@ -58,7 +57,7 @@ def grabsong(url):
 	
 	return bot.dump_intention() 
 	
-def remixsong(remixintention):
+def remixsong(remixintention, window):
 	global bot
 	# load bot, reconnect to soundcloud, but only if we haven't already connected
 	bot = DadaBot.load(remixintention) if not bot else bot 
@@ -67,6 +66,7 @@ def remixsong(remixintention):
 		print "This song has already been remixed"
 		return remixintention
 	
+	bot.remix_process_call = "python remix-scripts/becawwrdsaekva.py %s %s " + str(int(window))
 	###
 	# Do it! remix() runs a subprocess (probably an EchoNest python script), 
 	# it assumes the original mp3 is located at bot.track_mp3
@@ -101,9 +101,12 @@ def postsong(postintention):
 	# remix title
 	#bot.remix_title = "%s: %s [%s]" % tuple([bot.follower.username, bot.track.title, bot.tag])
 	def weave_words(old):
+		old = str(old)
 		new = ""
 		oldlen = len(old)
-		if oldlen%2==0:
+		if oldlen == 0:
+			return ""
+		elif oldlen%2==0:
 			old += " "
 			oldlen+=1
 		for i in range(0,oldlen):
@@ -166,7 +169,8 @@ if __name__ == '__main__':
 		intention = grabsong("") # if not given url/file, grabs a new song from soundcloud followers
 
 	if "remix" in sys.argv:
-		intention = remixsong(intention) # if remix flag is set, remix the song!
+		# if remix flag is set, remix the song!
+		intention = remixsong(intention, "window" in sys.argv) # "window" is another flag, which will put gaps of silence between segments.  
 	if "post" in sys.argv:
 		intention = postsong(intention) # will throw exception if you try to post a song which hasn't been remixed
 	

@@ -42,4 +42,16 @@ nosetests.xml
 *.bat
 *.intention
 Thumbs.db
+*.wav
 
+# other stuff
+*.asd 
+*.mp3*
+
+# directories
+swamp
+html
+
+# 
+*metascript*
+*^*.py

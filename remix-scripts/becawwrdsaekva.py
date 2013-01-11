@@ -26,7 +26,7 @@ Example:
 	python becawwrdsaekva.py hypersisyphus.mp3 hupprsisyehys.mp3
 """
 
-def main(inputFilename, outputFilename):
+def main(inputFilename, outputFilename, windowing):
 	print "HERE WE GO!!!!"
 	print inputFilename
 	print "\n"
@@ -51,20 +51,23 @@ def main(inputFilename, outputFilename):
 		for i in range(0, seglen):
 			if i%2 :
 				seg = song[segs[i]]
-				seg.data = window(seg.data)
+				if windowing:
+					seg.data = window(seg.data)
 				out.append(seg)
 			else:
 				seg = song[ segs[seglen - i - 1 ]]
 				try:
 					seg.data = seg.data[::-1]
-					seg.data = window(seg.data)
+					if windowing:
+						seg.data = window(seg.data)
 					out.append(seg)
 					del(seg.data)
 					del(seg)
 				except:
 					print "fuckkkkk"
 					seg = song[segs[i]]
-					seg.data = window(seg.data)
+					if windowing:
+						seg.data = window(seg.data)
 					out.append(seg)
 			
 				
@@ -72,8 +75,7 @@ def main(inputFilename, outputFilename):
 	
 	#newAudio = audio.getpieces(song, chunks)
 	out.encode(outputFilename)
-	#newAudio.encode(outputFilename)
-
+	#newAudio.enc
 def window(data):
 	w = 8000 # window size; number of samples to taper off
 	s = len(data) # total number of samples in segment 
@@ -96,8 +98,9 @@ if __name__ == '__main__':
 	try :
 		inputFilename = sys.argv[1]
 		outputFilename = sys.argv[2]
+		window = bool(int(sys.argv[3]))
 	except :
 		print usage
 		sys.exit(-1)
 	
-	main(inputFilename, outputFilename)
+	main(inputFilename, outputFilename, window)
