@@ -18,8 +18,8 @@ inputFilename2="mp3/isaaccjlaugh.mp3"
 
 
 # USAGE/EXAMPLE
-# python kcluster_afromb.py INPUT INPUT OUTPUT CLUSTERS MIX
-# python kcluster_afromb.py build.mp3 from.mp3 to.mp3 5 0.5
+# python kcluster_afromb.py INPUT INPUT OUTPUT CLUSTERS MIX BESTMATCH
+# python kcluster_afromb.py build.mp3 from.mp3 to.mp3 5 0.5 0
 
 
 
@@ -31,6 +31,9 @@ outputFilename = sys.argv[3]
 num_clusters = int(sys.argv[4])
 # how many different groups will we cluster our data into?
 mix = float(sys.argv[5])
+# best_match = 1  # slower, less varied version. Good for b's which are percussion loops
+# best_match = 0 # faster, more varied version, picks a random segment from that cluster. Good for b's which are sample salads. 
+best_match = int(sys.argv[6])
 
 
 song = audio.LocalAudioFile(inputFilename)
@@ -111,33 +114,44 @@ print centroid_pairs
 # Just so we're clear, we're rebuilding the structure of song1 with segments from song2
 
 # prepare song2 clusters, 
-segclusters2 = [[]]*len(centroids2)
+segclusters2 = [audio.AudioQuantumList()]*len(centroids2)
 for s2 in range(0,len(idx2)):
 	segment2 = song2.analysis.segments[s2]
 	cluster2 = idx2[s2]
 	segment2.numpytimbre = array(segment2.timbre)
 	segclusters2[cluster2].append(segment2)
 	
+		
+	
 # for each segment1 in song1, find the timbrely closest segment2 in song2 belonging to the cluster2 with which segment1's cluster1 is paired. 
 for s in range(0,len(idx)):
 	segment1 = song.analysis.segments[s]
 	cluster1 = idx[s]
 	cluster2 = [li[1] for li in centroid_pairs if li[0]==cluster1][0]
+
+	if(best_match>0):
+		# slower, less varied version. Good for b's which are percussion loops
+		"""
+		timbre1 = array(segment1.timbre)
+		min_distance = [9999999999999,0]
+		for seg in segclusters2[cluster2]:
+			timbre2 = seg.numpytimbre
+			euclidian_distance = norm(timbre2-timbre1)
+			if euclidian_distance < min_distance[0]:
+				min_distance = [euclidian_distance, seg]
+		bestmatchsegment2 = min_distance[1]
+		# we found the segment2 in song2 that best matches segment1
+		"""
+		bestmatches = segclusters2[cluster2].ordered_by(timbre_distance_from(segment1))
 		
-	"""
-	timbre1 = array(segment1.timbre)
-	min_distance = [9999999999999,0]
-	for seg in segclusters2[cluster2]:
-		timbre2 = seg.numpytimbre
-		euclidian_distance = norm(timbre2-timbre1)
-		if euclidian_distance < min_distance[0]:
-			min_distance = [euclidian_distance, seg]
-	bestmatchsegment2 = min_distance[1]
-	# we found the segment2 in song2 that best matches segment1
-	"""
-	
-	# faster, more varied version, picks a random segment from that cluster
-	bestmatchsegment2 = choice(segclusters2[cluster2])
+		if(best_match > 1):
+			maxmatches = max(best_match, len(bestmatches))
+			bestmatchsegment2 = choice(bestmatches[0:maxmatches])
+		else:
+			bestmatchsegment2 = bestmatches[0]
+	else:
+		# faster, more varied version, picks a random segment from that cluster. Good for sample salads. 
+		bestmatchsegment2 = choice(segclusters2[cluster2])
 		
 	reference_data = song[segment1]
 	segment_data = song2[bestmatchsegment2]
