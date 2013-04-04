@@ -57,7 +57,8 @@ I usually get good results using something between k = 3 (kick, snare, hihat) an
 BESTMATCH: Which segment do we pick from b's group? 
 0 random
 1 pick the best match
-3 pick randomly from the best 3 matches
+2 pick randomly from the best 2 matches
+n pick randomly from the best n matches
 
 #############################
 
@@ -69,7 +70,6 @@ TODO:
 
 """
 
-from pylab import plot,show
 from numpy import vstack,array
 from numpy.random import rand
 from numpy.linalg import norm
