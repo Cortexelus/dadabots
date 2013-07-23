@@ -21,10 +21,4 @@ Put your EchoNest remixing script in remix-scripts, you can also try examples th
 
 
 
-Those were shitty instructions
-==============================
-
-Go find Lord Kavoxx for me. 
-
-
 
