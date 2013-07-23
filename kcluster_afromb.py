@@ -6,7 +6,7 @@ cortexel.us
 cj@imreallyawesome.com
 http://github.com/cortexelus/dadabots
 
-An improved version of echonest's afromb.py.
+An improved version of Ben Lacker's afromb.py.
 
 Uses k-means clustering on timbre data.
 For each segment in a:
@@ -15,11 +15,10 @@ For each segment in a:
 	Picks a new segment from b's group (randomly, the best match, or from a set of best matches)
 
 In this way, the diversity of timbre is preserved.
-(unlike the previous ruler of the lands afromb.py, which merely took every segment in a found the closest segment in b----its process didn't preserve the diversity of b)
+(afromb.py takes every segment in a and finds the closest segment in b---but this process doesn't preserve the diversity of b)
 
 Which makes it possible to take simple beats (kick snare hithat) and layer an enslaught of samples ontop of them while preserving the ebb and flow of the rhythm. 
-
-Which could be the basis of like a whole genre of electronic music. 
+For example, as this song: http://soundcloud.com/cortexelus/23-mindsplosion-algorithmic
 
 #############################
 
