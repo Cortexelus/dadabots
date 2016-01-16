@@ -56,14 +56,15 @@ Open *Dadabot_Autochiptune.ipynb* in jupyter notebook.
 
 Search for `client_id` and `client_secret` and update them with your soundcloud API credentials. 
 
-Searh for `bot.username` and `bot.password` to your new soundcloud account credentials. 
+Search for `bot.username` and `bot.password` to your new soundcloud account credentials. 
 
 Execute all the code.
+
+Needs at least one follower in order to start spidering. 
 
 As long as jupyter notebook server is running, the bot will continue to make new tracks. 
 
 If you register for Soundcloud Pro the bot will post new tracks FOREVER
-
 
 
 ## Making a new bot
