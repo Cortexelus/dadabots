@@ -22,7 +22,7 @@ Inactive
 ## Presentations
 
 * [DadaBots: Socially Automated Dadaist Music Remix Bots](https://vimeo.com/72277348)
-* [Northeastern ACM Speaker Series: Computational Creativity](https://www.facebook.com/events/165144357029161/?ref=5) "Forming a cult of personality around an artificial artist"
+* [Northeastern ACM Speaker Series: Dadabots &  Computational Creativity](https://www.facebook.com/events/165144357029161/?ref=5)
 * [REMIX.ARMY](https://youtu.be/ue_KHvQZH8M)
 
 ## In the media
