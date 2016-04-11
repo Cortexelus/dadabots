@@ -29,6 +29,7 @@ Inactive
 
 * [Algopop](http://algopop.tumblr.com/post/67950573648/dadabots-socially-automated-dadaist-music-remix)
 * [Highway Magazine](http://www.highwaymagazine.info/2015/12/dadabots-music-algorithms/)
+* [When Algorithms Create Our Culture](http://www.worldcrunch.com/tech-science/when-algorithms-create-our-culture/c4s19935/)
 
 
 ## dadabots_old/
