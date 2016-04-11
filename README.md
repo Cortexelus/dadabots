@@ -6,7 +6,7 @@ Soundcloud bots that
  * post the remixes 
  * comment on tracks
  * Free account: repeat until account limit is reached
- * Soundcloud Pro: repeat forever
+ * Soundcloud Pro: repeat forever, or until temporary bans for too much activity (Avoid more than 50 songs a day)
 
 # See them in action! 
 
